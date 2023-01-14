@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  serviceoneapp:
+    image: ${DOCKER_REGISTRY-}serviceoneapp
+    build:
+      context: .
+      dockerfile: src/service-invocation/ServiceOne/Dockerfile
+    ports:
+      - "3500:3500"
+      - "5010:80"
+
+  serviceoneapp-dapr:
+    image: "daprio/daprd:latest"
+    command: [
+        "./daprd",
+        "-app-id", "serviceoneapp",
+        "-app-port", "80",
+        "-components-path", "/components",
+        "-log-level", "debug",
+    ]
+    depends_on:
+        - serviceoneapp
+    network_mode: "service:serviceoneapp"
+
+  servicetwoapp:
+    image: ${DOCKER_REGISTRY-}servicetwoapp
+    build:
+      context: .
+      dockerfile: src/service-invocation/ServiceTwo/Dockerfile
+
+  servicetwoapp-dapr:
+    image: "daprio/daprd:latest"
+    command: [
+        "./daprd",
+        "-app-id", "servicetwoapp",
+        "-app-port", "80",
+        "-components-path", "/components",
+        "-log-level", "debug",
+    ]
+    depends_on:
+        - servicetwoapp
+    network_mode: "service:servicetwoapp"

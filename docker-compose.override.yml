@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  serviceoneapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "3500:3500"
+      - "5010:80"
+    volumes:
+      - "./components/:/components"
+
+  servicetwoapp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "3501:3501"
+      - "5020:80"
+    volumes:
+      - "./components/:/components"
